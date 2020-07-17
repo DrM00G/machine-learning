@@ -15,7 +15,11 @@ class Matrix:
           else:
             self.elements[rows][entry] = fill
 
-      
+  def test_show(self):
+    result = []
+    for rows in range(len(self.elements)):
+      result.append(self.elements[rows])
+    return(str(result))
 
   def show(self):
     for rows in range(len(self.elements)):
@@ -158,26 +162,27 @@ class Matrix:
 
     return self.elements
 
-  def rref(self, return_determinant=False):
-        dummy_matrix = self.copy(self) 
-        for i in range(0, dummy_matrix.cols): 
-            pivot_row = dummy_matrix.get_pivot_row(i)
-            if pivot_row != None:
-                if pivot_row != i:
-                    dummy_matrix.swap_rows(pivot_row, i)
-                    dummy_matrix.determinant_number *= -1
-                dummy_matrix.scale_row(i)
-                dummy_matrix.determinant_number *= dummy_matrix.get_scalar(i)
-                if i != dummy_matrix.cols - 1:  #if not last row
-                    dummy_matrix.clear_below(i)
-                if i != 0:  
-                    dummy_matrix.clear_above(i)
-                self.determinant_number = dummy_matrix.determinant_number
-        if return_determinant == True:
-            return self.determinant_number
-        return dummy_matrix
+  # def rref(self, invert_matrix=False):
+  #     new_matrix = self.copy()
+  #     if invert_matrix is True:
+  #         new_matrix.ID = Matrix(shape = (len(self.elements),le(self.elements[0])), fill = 'diag')
+  #     column_big = 0
+  #     for r in range(len(new_matrix.elements[0])):
+  #         if r == len(new_matrix.elements):
+  #             column_big = 1
+  #             pass       
+  #         if new_matrix.get_pivot_row(r) is None:
+  #             pass
+  #         elif(new_matrix.get_pivot_row(r) != r) and column_big != 1:
+  #             new_matrix.swap_rows(r,new_matrix.get_pivot_row(r),inv_matrix = invert_matrix)
 
-
+  #         if column_big == 0:
+  #             new_matrix.scale_row(r, inv_matrix = invert_matrix)
+  #             new_matrix.clear_above(r, inv_matrix = invert_matrix)
+  #             new_matrix.clear_below(r, inv_matrix = invert_matrix)
+  #     if invert_matrix is True:
+  #         self.ID = new_matrix.ID
+  #     return new_matrix
 
   def inverse(self):
     identity = Matrix(shape = (len(self.elements), len(self.elements[0])), fill = 'diagonal')
@@ -207,6 +212,9 @@ class Matrix:
         Y.elements[i] = [y]
     x_tpose = X.transpose()
     return ((x_tpose @ X).inverse() @ (x_tpose @ Y)).elements
+
+  def copy(self):
+        return Matrix(elements=[[num for num in row] for row in self.elements])
 
   def __add__(self,B):
     return self.add(B)

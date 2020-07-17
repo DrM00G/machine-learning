@@ -27,6 +27,20 @@ class GradientDescent:
         if num_steps > 1:
             self.descend(scaling_factor, delta, num_steps-1, logging)
 
+    def cartesian_product(self,arrays):
+        result = []
+        temp = []
+        for i in range(len(arrays)):
+            temp = result
+            result = []
+            for j in arrays[i]:
+                if i > 0:
+                    for k in temp:
+                        result.append(k + [j])
+                else:
+                    result.append([j])
+        return result
+
     def compute_gradient(self, delta):
         result = []
         for i in range(len(self.min)):
@@ -36,4 +50,4 @@ class GradientDescent:
             altered_guess[i] -= 2*delta
             b_approx = self.f(*altered_guess)
             result.append(f_approx - b_approx)
-        return tuple(g / (2*delta) for g in result)
+        return tuple(round(g / (2*delta),.0000000001) for g in result)
