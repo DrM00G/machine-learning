@@ -39,7 +39,7 @@ class Matrix:
 
     else:
 
-      print("Can't add 2 matricies of different size")
+      print("Can't add 2 matrices of different size")
 
 
     

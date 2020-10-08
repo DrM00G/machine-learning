@@ -1,6 +1,6 @@
 import sys
 sys.path.append('src')
-from polynonomial_regression import PolynomialRegressor 
+from polynomial_regression import PolynomialRegressor 
 
 def single_variable_function(x):
     return (x-1)**2
