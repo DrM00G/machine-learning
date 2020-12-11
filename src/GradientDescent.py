@@ -1,5 +1,3 @@
-import inspect
-
 class GradientDescent:
     def __init__(self, function):
         self.f = function
@@ -41,7 +39,7 @@ class GradientDescent:
                     result.append([j])
         return result
 
-    def compute_gradient(self, delta):
+    def compute_gradient(self, delta=0.001):
         result = []
         for i in range(len(self.min)):
             altered_guess = list(self.min)
@@ -50,4 +48,4 @@ class GradientDescent:
             altered_guess[i] -= 2*delta
             b_approx = self.f(*altered_guess)
             result.append(f_approx - b_approx)
-        return tuple(round(g / (2*delta),.0000000001) for g in result)
+        return tuple(g / (2*delta) for g in result)

@@ -1,2 +1,3 @@
-language = "bash"
-run = "python tests/Matrix_test.py"
+language = "python3"
+run = "python tests/test_decision_tree.py"
+#run = "python src/choice_calc.py"

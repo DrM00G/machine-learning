@@ -1,6 +1,7 @@
 class Matrix:
   def __init__(self, elements = None , shape = None , fill = 0):
     self.elements = elements
+    self.final_determinant = 1
     if shape != None:
       self.elements =[ [0 for j in range(shape[1])]
        for i in range(shape[0])] 
@@ -18,7 +19,10 @@ class Matrix:
   def test_show(self):
     result = []
     for rows in range(len(self.elements)):
-      result.append(self.elements[rows])
+      result.append([])
+      for collums in range(len(self.elements[0])):
+        #print(self.elements[rows][collums])
+        result[rows].append(self.elements[rows][collums])
     return(str(result))
 
   def show(self):
@@ -120,6 +124,7 @@ class Matrix:
 
   def swap_rows(self,row_index1,row_index2):
     row_save = []
+    self.final_determinant *= -1
     for i in range(len(self.elements[0])):
       row_save.append(self.elements[row_index1][i])
       self.elements[row_index1][i] = self.elements[row_index2][i]
@@ -128,18 +133,20 @@ class Matrix:
 
   def scale_row(self, I):
     #find first non-zero
-    for i in range(len(self.elements[I])):
-      if self.elements[I][i] != 0:
-        zero_val = self.elements[I][i]
-        break
-    for i in range(len(self.elements[I])):
-      self.elements[I][i] /= zero_val
-    return self.elements
+        for i in range(len(self.elements[I])):
+            if self.elements[I][i] != 0:
+                zero_val = self.elements[I][i]
+                break
+        else:
+            zero_val = 1
+        for i in range(len(self.elements[I])):
+            # print(self.elements[I][i])
+            # print(zero_val)
+            self.elements[I][i] /= zero_val
+        return self.elements
 
 
   def clear_below(self,I):
-
-
     pivot_as_1 = self.scale_row(I)
 
     for i in range(len(self.elements)):
@@ -150,59 +157,164 @@ class Matrix:
 
     return self.elements
 
+
+
   def clear_above(self,I):
 
     pivot_as_1 = self.scale_row(I)
 
     for i in range(len(self.elements)):
       if i < I:
+        #print(str(i)+","+str(I))
         row_first_input = self.elements[i][I]
         for j in range(len(self.elements[0])):
           self.elements[i][j] -= row_first_input * self.elements[I][j]
-
+ 
     return self.elements
 
-  # def rref(self, invert_matrix=False):
-  #     new_matrix = self.copy()
-  #     if invert_matrix is True:
-  #         new_matrix.ID = Matrix(shape = (len(self.elements),le(self.elements[0])), fill = 'diag')
-  #     column_big = 0
-  #     for r in range(len(new_matrix.elements[0])):
-  #         if r == len(new_matrix.elements):
-  #             column_big = 1
-  #             pass       
-  #         if new_matrix.get_pivot_row(r) is None:
-  #             pass
-  #         elif(new_matrix.get_pivot_row(r) != r) and column_big != 1:
-  #             new_matrix.swap_rows(r,new_matrix.get_pivot_row(r),inv_matrix = invert_matrix)
 
-  #         if column_big == 0:
-  #             new_matrix.scale_row(r, inv_matrix = invert_matrix)
-  #             new_matrix.clear_above(r, inv_matrix = invert_matrix)
-  #             new_matrix.clear_below(r, inv_matrix = invert_matrix)
-  #     if invert_matrix is True:
-  #         self.ID = new_matrix.ID
-  #     return new_matrix
+  def rref(self):
 
-  def inverse(self):
-    identity = Matrix(shape = (len(self.elements), len(self.elements[0])), fill = 'diagonal')
+      if len(self.elements) >= len(self.elements[0]):
+          repetitions = self.elements[0]
+      else:
+          repetitions = self.elements
 
-    if len(self.elements) == len(self.elements[0]):
-      inverse = []
-      saver = len(self.elements)
+      for i in range(len(repetitions)):
+          if (self.get_pivot_row(i) == None):
+              pass
+          else:
+              pivot1 = self.get_pivot_row(i)
+
+          if pivot1 != i:
+              self.swap_rows(i, pivot1)
+
+          self.scale_row(i)
+
+          self.clear_below(i)
+          self.clear_above(i)
+
       for i in range(len(self.elements)):
-        for j in range(len(identity.elements)):
-          self.elements[i].append(identity.elements[i][j])
+          pos_self = [abs(ele) for ele in self.elements[i]]
+          if sum(pos_self) == 0:
+              self.swap_rows(i, len(self.elements) - 1)
+              self.clear_above(len(self.elements) - 3)
+          if self.elements[0][0] != 1:
+              for i in range(len(self.elements)):
+                  if self.elements[i][0] == 1:
+                      self.swap_rows(i, 0)
 
-      self.rref()
+      return self
 
-      for i in range(saver):
-        inverse.append([])
-        for j in range(saver):
-          inverse[i].append(self.elements[i][len(self.elements[0])-3+j])
+  def recursive_det(self):
+      n = len(self.elements)
+      row = 0
+      det = 0
+      if n == len(self.elements[0]):
+          if n == 1:
+              return self.elements[0][0]
+          for col in range(n):
+              A = self.minor(row, col)
+              # print(self.elements[row][col])
+              # print(((-1)**(row+col)))
+              det += ((-1)**(row+col))*(self.elements[row][col])*(A.recursive_det())
               
-    return Matrix(inverse)
+          return det
+      else:
+          print('No determinant')
 
+  def minor(self, row, col):
+      minor_matr = []
+      for r in range(len(self.elements) - 1):
+          minor_matr.append([])
+          for c in range(len(self.elements) - 1):
+              minor_matr[r].append(0)
+      for r in range(len(self.elements)):
+          if r == row:
+              pass
+          else:
+              for c in range(len(self.elements[0])):
+                  if c == col:
+                      pass
+                  else:
+                      if r > row:
+                          if c > col:
+                              minor_matr[r-1][c-1] = self.elements[r][c]
+                          else:
+                              minor_matr[r-1][c] = self.elements[r][c]
+                      else:
+                          if c > col:
+                              minor_matr[r][c-1] = self.elements[r][c]
+                          else:
+                              minor_matr[r][c] = self.elements[r][c]
+      minor_matr = Matrix(elements=minor_matr)
+      return minor_matr
+
+  # def inverse(self):
+  #   identity = Matrix(shape = (len(self.elements), len(self.elements[0])), fill = 'diagonal')
+
+  #   if len(self.elements) == len(self.elements[0]):
+  #     inverse = []
+  #     saver = len(self.elements)
+  #     for i in range(len(self.elements)):
+  #       for j in range(len(identity.elements)):
+  #         self.elements[i].append(identity.elements[i][j])
+
+  #     self.rref()
+
+  #     for i in range(saver):
+  #       inverse.append([])
+  #       for j in range(saver):
+  #         inverse[i].append(self.elements[i][len(self.elements[0])-3+j])
+              
+  #   return Matrix(inverse)
+
+
+  def inverse_by_minors(self):
+        copy = self.copy()
+        if copy.determinant != 0 and len(copy.elements) == len(copy.elements[0]):
+            identity = Matrix(shape=(len(copy.elements), len(copy.elements[0])), fill='diagonal')
+            inverse = []
+            saver = len(copy.elements)
+            for i in range(len(copy.elements)):
+                for j in range(len(identity.elements)):
+                    copy.elements[i].append(identity.elements[i][j])
+
+            copy.rref()
+            for _ in range(saver):
+                inverse.append([])
+            for i in reversed(range(saver)):
+                for j in range(saver):
+                    inverse[i].append(copy.elements[i][len(copy.elements[0]) - saver + (j)])
+            
+            return Matrix(inverse)
+        elif copy.determinant() == 0:
+            return Matrix(elements = [["Cannot find inverse due to matrix being singular."]])
+        elif len(copy.elements) != len(copy.elements[0]):
+            return Matrix(elements = [["Cannot find inverse due to size."]])
+
+  def determinant(self):
+      ID = Matrix(shape=(len(self.elements), len(self.elements[0])), fill='diagonal')
+      if self.shape == (2,2):
+          det = (self.elements[0][0] * self.elements[1][1]) - (self.elements[0][1] * self.elements[1][0])
+          return det
+      reducer = self.copy()
+      reduced =reducer.rref()
+      # print(ID.test_show())
+      if ID.test_show() == reduced.test_show():
+        boolen = True
+      else:
+        boolen = False
+      copy = self.copy()
+      copy.final_determinant = 1
+      if len(copy.elements) == len(copy.elements[0]) and boolen is True:
+          copy = copy.rref()
+          return copy.final_determinant
+      else:
+          # print(boolen)
+          # print(ID.test_show())
+          # print(reduced.test_show())
+          print('No determinant')
 
   def calc_linear_approximation_coefficients(self,data,poly_degree):
     X = Matrix(shape = (len(data), 1))
@@ -215,6 +327,8 @@ class Matrix:
 
   def copy(self):
         return Matrix(elements=[[num for num in row] for row in self.elements])
+        result.final_determinant = self.final_determinant
+
 
   def __add__(self,B):
     return self.add(B)
