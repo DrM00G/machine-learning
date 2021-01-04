@@ -48,7 +48,7 @@ class KNearestNeighborsClassifier:
       print(catagories[(n)*2]+": "+str(sum(catagories[(n)*2+1])/len(catagories[(n)*2+1])))
 
 
-  def classify(self,observation):
+  def fit(self,observation):
     sorted_list = self.nearest_neighbors(observation).to_array()
     catagories=['Shortbread',[0],'Sugar',[0],'Fortune',[0]]
     for n in range(self.k):

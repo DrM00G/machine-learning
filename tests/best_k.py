@@ -43,7 +43,7 @@ for n in range(1,k):
         df1 = DataFrame.from_array(copy, columns = knn.df.columns)
         knn2 = KNearestNeighborsClassifier(df1, prediction_column = 'Cookie Type')
 
-        if knn2.classify(observation, k = n) == correct:
+        if knn2.fit(observation, k = n) == correct:
             correct_observations += 1
     arr.append(correct_observations/len(knn.df.to_array()))
 
