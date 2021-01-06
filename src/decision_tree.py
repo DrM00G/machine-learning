@@ -1,16 +1,21 @@
 from dataframe import DataFrame
 from node import Node
+import random
+
 
 class DecisionTree:
-    def __init__(self, df):
-        self.df = df
-        self.df = self.df.append_columns({'node_index': [n for n in range(len(df.to_array()))]})
-        self.root = Node(self.df)
+    def __init__(self, split_metric = 'gini'):
+      self.df = "Not yet"
+      self.root = "Not yet"
+      self.split_metric = split_metric
 
     def split(self):
         self.root.split()
 
-    def fit(self):
+    def fit(self, df):
+      self.df = df
+      self.df = self.df.append_columns({'node_index': [n for n in range(len(df.to_array()))]})
+      self.root = Node(self.df,self.split_metric)
       while self.root.unfitted():
         self.split()
 

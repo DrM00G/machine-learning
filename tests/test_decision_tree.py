@@ -113,8 +113,8 @@ df = DataFrame.from_array(
     [4,10.5,'A']],
     columns = ['x', 'y', 'class']
 )
-dt = DecisionTree(df)
-dt.fit()
+dt = DecisionTree(split_metric = 'gini')
+dt.fit(df)
 
 assert dt.root.best_split == ('y', 12.5), 'best_split test failed'
 print('best_split test succeeded')
@@ -136,6 +136,29 @@ assert dt.classify({'x': 2.5, 'y': 13}) == 'B', 'Classification failed'
 assert dt.classify({'x': 4, 'y': 12}) == 'A', 'Classification failed'
 assert dt.classify({'x': 3.25, 'y': 10.5}) == 'B', 'Classification failed'
 assert dt.classify({'x': 3.75, 'y': 10.5}) == 'A', 'Classification failed'
+
+print("Random Tests")
+
+df = DataFrame.from_array(
+    [[2,13,'B'],[2,13,'B'],[2,13,'B'],[2,13,'B'],[2,13,'B'],[2,13,'B'],
+    [3,13,'B'],[3,13,'B'],[3,13,'B'],[3,13,'B'],[3,13,'B'],[3,13,'B'],
+    [2,12,'B'],[2,12,'B'],
+    [3,12,'A'],[3,12,'A'],
+    [3,11,'A'],[3,11,'A'],
+    [3,11.5,'A'],[3,11.5,'A'],
+    [4,11,'A'],[4,11,'A'],
+    [4,11.5,'A'],[4,11.5,'A'],
+    [2,10.5,'A'],[2,10.5,'A'],
+    [3,10.5,'B'],
+    [4,10.5,'A']],
+    columns = ['x', 'y', 'class']
+)
+dt = DecisionTree(split_metric = 'random')
+dt.fit(df)
+
+print("root.best_split"+str(dt.root.best_split))
+print("root.low.best_split"+str(dt.root.low.best_split))
+print("Run multiple times to see if random")
 # >>> dt.root.best_split
 # ('y', 12.5)
 # >>> dt.root.low.best_split

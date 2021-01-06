@@ -1,8 +1,10 @@
 from dataframe import DataFrame
+import random
 
 class Node:
-  def __init__(self, df):
+  def __init__(self, df, split_metric):
     self.df = df
+    self.split_metric = split_metric
     self.row_indices = df.ordered_dict['node_index']
     self.class_counts = self.calc_class_counts()
     self.impurity = self.calc_impurity()
@@ -51,22 +53,26 @@ class Node:
               low.append(point)
           elif point[axis] >= split:
               high.append(point)
-      low_node = Node(DataFrame.from_array(low, self.df.columns))
-      high_node = Node(DataFrame.from_array(high, self.df.columns))
+      low_node = Node(DataFrame.from_array(low, self.df.columns),self.split_metric)
+      high_node = Node(DataFrame.from_array(high, self.df.columns),self.split_metric)
       new_nodes = [low_node, high_node]
       for split_node in new_nodes:
           goodness -= (len(split_node.row_indices)/len(self.row_indices)) * split_node.impurity
       return round(goodness,3)
   
   def find_best_split(self):
-    best_goodness = 0
-    for split in self.possible_splits.to_array():
-      if split[2]>best_goodness:
-        best_split=(split[0],split[1])
-        best_goodness=split[2]
-    return best_split
-  
-  def split(self):
+    if self.split_metric == "gini":
+      best_goodness = 0
+      for split in self.possible_splits.to_array():
+        if split[2]>best_goodness:
+          best_split=(split[0],split[1])
+          best_goodness=split[2]
+      return best_split
+    elif self.split_metric == "random":
+      rand_split=random.choice(self.possible_splits.to_array())
+      return (rand_split[0],rand_split[1])
+
+  def split(self,):
     if self.impurity != 0:
       if self.unsplit:
         if self.best_split[0] == 'x':
@@ -80,8 +86,8 @@ class Node:
                 low_points.append(point)
             elif point[axis] >= self.best_split[1]:
                 high_points.append(point)
-        self.low = Node(DataFrame.from_array(low_points, self.df.columns))
-        self.high = Node(DataFrame.from_array(high_points, self.df.columns))
+        self.low = Node(DataFrame.from_array(low_points, self.df.columns),self.split_metric)
+        self.high = Node(DataFrame.from_array(high_points, self.df.columns),self.split_metric)
         self.unsplit = False
       else:
         if self.low.impurity != 0:
