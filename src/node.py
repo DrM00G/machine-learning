@@ -61,6 +61,7 @@ class Node:
       return round(goodness,3)
   
   def find_best_split(self):
+    # print("testing")
     if self.split_metric == "gini":
       best_goodness = 0
       for split in self.possible_splits.to_array():
@@ -73,6 +74,7 @@ class Node:
       return (rand_split[0],rand_split[1])
 
   def split(self,):
+    # print("testing")
     if self.impurity != 0:
       if self.unsplit:
         if self.best_split[0] == 'x':

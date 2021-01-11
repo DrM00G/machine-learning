@@ -76,6 +76,12 @@ class DataFrame:
                     new_data[ind_of_dummy].append(0)
         return new_data
 
+    def swap_columns(self, column1_indx, column2_indx):
+        new_columns = [column for column in self.columns]
+        new_columns[column1_indx] = self.columns[column2_indx]
+        new_columns[column2_indx] = self.columns[column1_indx]
+        return DataFrame(self.ordered_dict, new_columns)
+
     def append_columns(self, new_columns, column_order = None):
         result = self.ordered_dict
         for column in new_columns:
