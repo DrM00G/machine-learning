@@ -154,3 +154,23 @@ class DataFrame:
                     index[n]= index[n + 1]  
                     index[n + 1]= temp[1]
         return index
+
+    @classmethod
+    def from_csv(cls, file_path, header = True):
+        with open(file_path, "r") as file:
+            data = file.read()
+        split_lines = data.split('\n')
+        # print(split_lines)
+        lines = [line.split('"""') for line in split_lines if len(line) > 0]
+        print(lines)
+        # data = []
+        for elem in lines:
+          arr = [[x for x in item.split(',') if len(x)>0] for  item in elem if len(item)>0]
+          print(arr)
+          final = arr[0]+[float(x) for x in arr[1]]
+          data.append(final)
+        if header:
+            lines[0] = [item for item in lines[0][0].split('"') if item != ", " and len(item) > 0]
+            return cls.from_array([lines[i] for i in range(len(lines)) if i > 0], lines[0])
+        else:
+            return cls.from_array(lines, header)
