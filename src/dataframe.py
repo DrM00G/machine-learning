@@ -190,6 +190,7 @@ class Node:
     self.high = 0
     self.low = 0
     self.unsplit = True
+    self.bottom = False
     if self.impurity != 0:
       self.possible_splits = self.calc_possible_splits()
       self.best_split = self.find_best_split()
@@ -252,10 +253,10 @@ class Node:
       rand_split=random.choice(self.possible_splits.to_array())
       return (rand_split[0],rand_split[1])
 
-  def split(self,):
+  def split(self,max_depth, depth):
     # print("testing")
-    if self.impurity != 0:
-      if self.unsplit:
+    if self.impurity != 0 and max_depth>depth:
+      if self.unsplit :
         if self.best_split[0] == 'x':
           axis = 0
         else:
@@ -270,11 +271,13 @@ class Node:
         self.low = Node(DataFrame.from_array(low_points, self.df.columns),self.split_metric)
         self.high = Node(DataFrame.from_array(high_points, self.df.columns),self.split_metric)
         self.unsplit = False
-      else:
+      elif max_depth>depth+1:
         if self.low.impurity != 0:
-          self.low.split()
+          self.low.split(max_depth, depth+1)
         if self.high.impurity != 0:
-          self.high.split()
+          self.high.split(max_depth, depth+1)
+    else:
+      self.unsplit = False
 
   def unfitted(self):
     if self.impurity == 0:

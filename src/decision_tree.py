@@ -1,10 +1,13 @@
 from dataframe import DataFrame
-from node import Node
 import random
 
 
 class DecisionTree:
-    def __init__(self, split_metric = 'gini'):
+    def __init__(self, split_metric = 'gini', max_depth = False):
+      if split_metric == "random":
+         self.max_depth =  max_depth
+      else:
+         self.max_depth = False
       self.df = "Not yet"
       self.root = "Not yet"
       self.split_metric = split_metric
