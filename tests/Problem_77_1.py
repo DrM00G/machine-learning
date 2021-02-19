@@ -6,7 +6,7 @@ from decision_tree import Node
 from random_forest import RandomForest
 
 path_to_datasets = '/home/runner/machine-learning1/datasets/'
-filename="freshman_lbs.csv"
+filename="freshm an_lbs.csv"
 filepath =path_to_datasets+filename
 filepath = path_to_datasets + filename
 df = DataFrame.from_csv(filepath)
