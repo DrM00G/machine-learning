@@ -1,3 +1,3 @@
 language = "python3"
-run = "python tests/best_k.py"
+run = "python tests/testing_109.py"
 #run = "python src/choice_calc.py"                                    

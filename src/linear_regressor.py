@@ -1,6 +1,6 @@
 import sys
 sys.path.append('src')
-from Matrix import Matrix
+from matrix import Matrix
 class LinearRegressor:
     def __init__(self,data_class, prediction_column):
         self.data = data_class
