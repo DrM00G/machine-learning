@@ -27,12 +27,13 @@ df = DataFrame.from_array(
 
     columns = ['Cookie Type' ,'Portion Eggs','Portion Butter','Portion Sugar','Portion Flour' ]
     )
-knn = KNearestNeighborsClassifier(df, prediction_column = 'Cookie Type')
+
 plot_data = []
-k = len(knn.df.to_array())
+k = 18
 arr = []
 
 for n in range(1,k):
+    knn = KNearestNeighborsClassifier(df, 'Cookie Type',n)
     correct_observations = 0
     print('Testing k = '+str(n))
     for i in range(len(knn.df.to_array())):
@@ -41,9 +42,9 @@ for n in range(1,k):
         copy = knn.df.to_array()
         del copy[i]
         df1 = DataFrame.from_array(copy, columns = knn.df.columns)
-        knn2 = KNearestNeighborsClassifier(df1, prediction_column = 'Cookie Type')
+        knn2 = KNearestNeighborsClassifier(df1, 'Cookie Type',k)
 
-        if knn2.fit(observation, k = n) == correct:
+        if knn2.fit(observation) == correct:
             correct_observations += 1
     arr.append(correct_observations/len(knn.df.to_array()))
 
@@ -54,4 +55,4 @@ plt.plot([x for x in range(1,k)],arr,linewidth = 0.75)
 plt.xlabel('k')
 plt.ylabel('accuracy')
 plt.title('Best size k')
-plt.savefig('K_nearest.png') 
+plt.savefig('TEST.png') 

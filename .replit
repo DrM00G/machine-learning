@@ -1,3 +1,3 @@
 language = "python3"
-run = "python tests/Problem_77_1.py"
-#run = "python src/choice_calc.py"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+run = "python tests/best_k.py"
+#run = "python src/choice_calc.py"                                    

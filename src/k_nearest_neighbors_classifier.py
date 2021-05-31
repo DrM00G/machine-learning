@@ -5,7 +5,7 @@ class KNearestNeighborsClassifier:
   def __init__(self,df, prediction_column,k):
     self.prediction_column = prediction_column
     self.df = df
-    self.k
+    self.k=k
 
 
   def compute_distances(self, observation):
