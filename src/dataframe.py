@@ -5,8 +5,9 @@ class DataFrame:
         self.columns = column_order
         self.ordered_dict = {}
         if column_order==None:
-          self.columns = [unit for unit in data_dict]
-          self.ordered_dict = data_dict
+            self.columns = [unit for unit in data_dict]
+            for colomn in self.columns:
+                self.ordered_dict[colomn] = data_dict[colomn]
         else:
           for colomn in self.columns:
             self.ordered_dict[colomn] = data_dict[colomn]
@@ -88,7 +89,8 @@ class DataFrame:
         result = self.ordered_dict
         for column in new_columns:
             result[column] = new_columns[column]
-        return DataFrame(result)
+        # print("appended cols"+str(result))
+        return DataFrame(result,column_order)
 
     def remove_columns(self,columns):
         result = {}

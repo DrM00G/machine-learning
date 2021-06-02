@@ -7,19 +7,32 @@ class LinearRegressor:
         self.prediction_column = prediction_column
         self.coefficients = self.solve_coefficients()
 
+    # def solve_coefficients(self):
+    #     result = {}
+    #     Inputs = Matrix(self.data.remove_columns([self.prediction_column]).to_array())
+    #     Results = Matrix(self.data.remove_columns([key for key in self.data.ordered_dict if key != self.prediction_column]).to_array())
+    #     x_tpose = Inputs.transpose()
+    #     coefficients = ((x_tpose @ Inputs).inverse_by_minors() @ (x_tpose @ Results)).elements
+    #     i = 0
+    #     for key in self.data.remove_columns([self.prediction_column]).ordered_dict:
+    #         result[key] = round(coefficients[i][0], 8)
+    #         i+=1
+    #     return result
+
     def solve_coefficients(self):
         result = {}
         Inputs = Matrix(self.data.remove_columns([self.prediction_column]).to_array())
-        Results = Matrix(self.data.remove_columns([key for key in self.data.ordered_dict if key != self.prediction_column]).to_array())
+        Results = Matrix(self.data.filter_columns([self.prediction_column]).to_array())
+
         x_tpose = Inputs.transpose()
+
         coefficients = ((x_tpose @ Inputs).inverse_by_minors() @ (x_tpose @ Results)).elements
         i = 0
         for key in self.data.remove_columns([self.prediction_column]).ordered_dict:
-            result[key] = round(coefficients[i][0], 8)
+            result[key] = coefficients[i][0]
             i+=1
+        # print(result)
         return result
-
-
 
 
     def gather_all_inputs(self,input_set):
@@ -31,8 +44,25 @@ class LinearRegressor:
                 if key1 != key2 and (key1 + "_" + key2) not in result and (key2 + "_" + key1) not in result:
                     result[key1 + "_" + key2] = input_set[key1]*input_set[key2]
         result['constant'] = 1
+        # print("RESULT:"+str(result))
         return result
-    
+
+    # def gather_all_inputs(self,input_set):
+    #     result = {}
+    #     if len(input_set)+2< len(self.data.columns):
+    #         for key in input_set:
+    #             result[key] = input_set[key]
+    #         for key1 in input_set:
+    #             for key2 in input_set:
+    #                 if key1 != key2 and (key1 + "_" + key2) not in result and (key2 + "_" + key1) not in result:
+    #                     result[key1 + "_" + key2] = input_set[key1]*input_set[key2]
+    #         result['constant'] = 1
+    #     elif len(input_set)+2 == len(self.data.columns):
+    #         result = {column:self.coefficients[column]*input_set[column] for column in input_set}
+    #         result['constant'] = 1
+    #     print("RESULT:"+str(result))
+    #     return result
+
     def predict(self, input_set):
         inputs = self.gather_all_inputs(input_set)
         result = sum([inputs[key]*self.coefficients[key] for key in inputs])
