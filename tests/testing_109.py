@@ -14,19 +14,19 @@ list_data=[[1,0],
 delta_table=[0.1,0.01,0.001,0.0001]
 all_coords = []
 
-for delta in delta_table:
-    new_list=[]
-    for pair in list_data:
-        if pair[1] == 0:
-            new_list.append([pair[0],delta])
-        else:
-            new_list.append([pair[0],1-delta])
+for delta_low in delta_table:
+    # new_list=[]
+    # for pair in list_data:
+    #     if pair[1] == 0:
+    #         new_list.append([pair[0],delta])
+    #     else:
+    #         new_list.append([pair[0],1-delta])
 
     df = DataFrame.from_array(
-        new_list,
+        list_data,
         columns = ['x', 'y'])
 
-    regressor = LogisticRegressor(df, prediction_column = 'y', max_value = 1)
+    regressor = LogisticRegressor(df, prediction_column = 'y', max_value = 1,delta=delta_low)
 
     coords = [[],[]]
     for x in range(20):
